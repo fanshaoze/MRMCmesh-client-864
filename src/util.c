@@ -39,6 +39,7 @@ int alloc_config(struct radio_type radio){
     char set_mode[100];
     char set_wds[100];
     char set_hwmode[100];
+    char set_hwmode_d[100];
      char id_temp[10];
     char * no_in_wlan;
     snprintf(id_temp,10,"%s",radio.radio_id);
@@ -49,16 +50,19 @@ int alloc_config(struct radio_type radio){
     sprintf(set_mode,"%s%s%s%s","uci set wireless.@wifi-iface[",no_in_wlan,"].mode=",radio.mode);
     sprintf(set_wds,"%s%s%s%d","uci set wireless.@wifi-iface[",no_in_wlan,"].wds=",radio.wds);
     sprintf(set_hwmode,"%s%s%s%s","uci set wireless.@wifi-iface[",no_in_wlan,"].hwmode=","11ac");
+    sprintf(set_hwmode_d,"%s%s%s%s","uci set wireless.@wifi-device[",no_in_wlan,"].hwmode=","11ac");
     printf("set_channel %s\n",set_channel);
     printf("set_ssid %s\n",set_ssid);
     printf("set_mode %s\n",set_mode);
     printf("set_wds %s\n",set_wds);
     printf("set_hwmode %s\n",set_hwmode);
+    printf("set_hwmode_d %s\n",set_hwmode_d);
     system(set_channel);
     system(set_ssid);
     system(set_mode);
     system(set_wds);
     system(set_hwmode);
+    system(set_hwmode_d);
     return 0;
 }
 
@@ -69,6 +73,7 @@ int alloc_config_all(struct radio_type * radios){
     char set_mode[100];
     char set_wds[100];
     char set_hwmode[100];
+    char set_hwmode_d[100];
     char * no_in_wlan;
     char id_temp[10];
     int i = 0;
@@ -82,11 +87,13 @@ int alloc_config_all(struct radio_type * radios){
         sprintf(set_mode,"%s%s%s%s","uci set wireless.@wifi-iface[",no_in_wlan,"].mode=",radios[i].mode);
         sprintf(set_wds,"%s%s%s%d","uci set wireless.@wifi-iface[",no_in_wlan,"].wds=",radios[i].wds);
         sprintf(set_hwmode,"%s%s%s%s","uci set wireless.@wifi-iface[",no_in_wlan,"].hwmode=","11ac");
+        sprintf(set_hwmode_d,"%s%s%s%s","uci set wireless.@wifi-device[",no_in_wlan,"].hwmode=","11ac");
         system(set_channel);
         system(set_ssid);
         system(set_mode);
         system(set_wds);
         system(set_hwmode);
+        system(set_hwmode_d);
         no_in_wlan=NULL;
     }
     confirm_wireless();
@@ -106,8 +113,8 @@ char *strrpc(char *str,char *oldstr,char *newstr){
             strcat(bstr,newstr);
             i += strlen(oldstr) - 1;
         }else{
-        	strncat(bstr,str + i,1);//保存一字节进缓冲区
-	    }
+            strncat(bstr,str + i,1);//保存一字节进缓冲区
+        }
     }
  
     strcpy(str,bstr);
@@ -124,12 +131,12 @@ char * compose_neighbor(struct node_neighbor neighbor){
     sprintf(tx, "%f", neighbor.tx_rate);
     sprintf(signal, "%d", neighbor.signal);
     sprintf(noise, "%d", neighbor.noise);
-	
+    
     char * nei_inform;
     nei_inform = (char *)malloc(strlen(neighbor.mac_addr)+1+strlen(signal)+1+strlen(noise)+1+strlen(tx) +1+strlen(neighbor.tx_qam)+1+strlen(rx)+1+strlen(neighbor.rx_qam));
-	sprintf(nei_inform,"%s%s%s%s%s%s%s%s%s%s%s%s%s",neighbor.mac_addr,"#",signal,"#",noise,"#",tx,"#",neighbor.tx_qam,"#",rx,"#",neighbor.rx_qam);
+    sprintf(nei_inform,"%s%s%s%s%s%s%s%s%s%s%s%s%s",neighbor.mac_addr,"#",signal,"#",noise,"#",tx,"#",neighbor.tx_qam,"#",rx,"#",neighbor.rx_qam);
     printf("nei_inform %s\n",nei_inform);
-	return nei_inform;
+    return nei_inform;
 }
 
 int radio_disable(struct radio_type radio){
