@@ -31,17 +31,17 @@ int get_config(struct radio_type * radios,char * recv_commmand){
     int temp_wds = 0;
     char * words;
     char recv_temp[200];
-    strcpy(recv_temp,recv_commmand);
+    snprintf(recv_temp,200,"%s",recv_commmand);
     words = strtok(recv_temp," ");
     //printf("words %s\n",words);
     for(i = 0;i<radio_no;i++){
         char * splite_parameter;
-        strcpy(recv_temp,recv_commmand);
+        snprintf(recv_temp,200,"%s",recv_commmand);
         words = strtok(recv_temp," ");
         words = tok_forward(words,i+1," ");
         //printf("words %s\n",words);
         char paras[200];
-        strcpy(paras,words);
+        snprintf(paras,200,"%s",words);
         splite_parameter = strtok(paras,"#");
         //printf("splite_parameter %s\n",splite_parameter);
         for(j = 0;j<radio_no;j++){
@@ -50,18 +50,22 @@ int get_config(struct radio_type * radios,char * recv_commmand){
 
                 splite_parameter = tok_forward(splite_parameter,1,"#");
                 //printf("splite_parameter %s\n",splite_parameter);
-                strrpc(splite_parameter,"\r\n","\0");
+                strrpc(splite_parameter,"\r","\0");
+                strrpc(splite_parameter,"\n","\0");
                 if (strcmp(splite_parameter,"DISABLED") != 0){
 
-                    strcpy(radios[j].channel,splite_parameter);
+                    radios[j].disabled = 0;
+                    snprintf(radios[j].channel,10,"%s",splite_parameter);
+                    
 
                     splite_parameter = tok_forward(splite_parameter,1,"#");
                     strrpc(splite_parameter,"\r\n","\0");
-                    strcpy(radios[j].ssid, splite_parameter);
+                    snprintf(radios[j].ssid,10,"%s",splite_parameter);
+                    
 
                     splite_parameter = tok_forward(splite_parameter,1,"#");
                     strrpc(splite_parameter,"\r\n","\0");
-                    strcpy(radios[j].mode, splite_parameter);
+                    snprintf(radios[j].mode,10,"%s",splite_parameter);
                     
                     splite_parameter = tok_forward(splite_parameter,1,"#");
                     strrpc(splite_parameter,"\r\n","\0");
@@ -70,7 +74,7 @@ int get_config(struct radio_type * radios,char * recv_commmand){
                 }
                 else{
                     radios[j].disabled = 1;
-                    radio_disable(radios[j]);
+                    
                 }
             }
         }

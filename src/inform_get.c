@@ -213,7 +213,7 @@ int get_freq(char * wlan){
     */
     FILE *fp;
     char * words;
-    char channel_number[2];
+    char channel_number[3];
     char StrLine[1024];
 
 //changed change the command wlan -- ath
@@ -227,7 +227,7 @@ int get_freq(char * wlan){
         fgets(StrLine,1024,fp);  //读取一行
         words = strtok(StrLine," ");
         words = strtok(NULL," ");
-        strncpy(channel_number,words,2);
+        strncpy(channel_number,words,3);
         int ch_number=atoi(channel_number);
         printf("ch_number is %d\n",ch_number);
         if (ch_number<20){
@@ -337,7 +337,7 @@ char * get_nei_infor(char * result, struct radio_type radio){
     int i = 0;
     int z = 0;
     int recordflag = 0;//用于标识“以下信噪比等信息是否需要记录”
-    sleep(5);
+    sleep(findnei_time);
     //************system(orig_com);
 	
     fp = fopen(filename,"r");

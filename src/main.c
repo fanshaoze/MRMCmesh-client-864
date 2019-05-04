@@ -19,16 +19,29 @@
 */
 int main()
 {
+    
     printf("start\n");
     int com_no = 0;
-    
+
     int i = 0;
     struct radio_type * radios = NULL;
+    
     //通过扫描，获取所有radio的信息，存储在radios的数组中
+
+    //初始化全局变量
     radio_no = 2;
+    enable_time = 120;
+    findnei_time = 20;
+
+
+
     snprintf(init_ssid,6,"%s","Link1");
     radios_inform_init();
 	radios = (struct radio_type*) malloc(sizeof(struct radio_type)*radio_no);
+    int *disables = (int *)malloc(sizeof(int) * radio_no);
+    for (i = 0;i<radio_no;i++){
+        disables[i] = 0;
+    }
     for(i = 0;i<radio_no;i++){
         snprintf(radios[i].radio_id,10,"%s","NULL");
         snprintf(radios[i].mac_addr,50,"%s","NULL");
@@ -42,7 +55,7 @@ int main()
 	radios_inform_init2(radios);
     alloc_config_all(radios);
     printf("sleep begin");
-    sleep(90);
+    confirm_wireless();
     printf("sleep over");
     char sendbuf[200];
 	//char recvbuf[200];
@@ -136,6 +149,7 @@ int main()
                 for(i = 0;i<radio_no;i++){
                     //关闭所有的射频
                     radio_disable_all(radios);
+                    confirm_wireless();
                 }
                  break;
             case 2:
@@ -145,6 +159,7 @@ int main()
                     if(radios[i].disabled == 0){
                         alloc_config(radios[i]);
                     }
+                    else radio_disable(radios[i]);
                 }
                 confirm_wireless();
                 break;
@@ -152,7 +167,7 @@ int main()
             case 3:
                 radio_init(radios);
                 alloc_config_all(radios);
-                sleep(90);
+                confirm_wireless();
                 //wait!!! enough
                 get_neighbor(clientSocket,radios);
                 //修改，发送！

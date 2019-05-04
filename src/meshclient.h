@@ -17,7 +17,7 @@
 #define init_channel_5G "36"
 #define init_ssid_5G "Link1"
 #define init_mode "ap"
-#define init_wds 0
+#define init_wds 1
 
 #define radio_max 20
 #define hdaddr_len 18
@@ -37,6 +37,8 @@
 
 char node_id[50];
 int radio_no;
+int enable_time;
+int findnei_time;
 char init_ssid[10];
 
 struct radio_type{
